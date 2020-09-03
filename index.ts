@@ -24,8 +24,6 @@ import { UICarouselComponent } from './ui-carousel/ui-carousel.component';
         ArrowComponent,
         SwiperDirective,
         UILazyloadDirective
-    ],
-    providers: [
-    ],
+    ]
 })
 export class UICarouselModule { }

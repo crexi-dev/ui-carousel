@@ -1,0 +1,40 @@
+:host{
+    width: 100%;
+}
+.ui-carousel-item{
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+}
+.transition{
+    transition: transform;
+    -moz-transition: transform;
+    -webkit-transition: transform;
+    -o-transition: transform;
+    -ms-transition: transform;
+    transition-timing-function: ease;
+    -moz-transition-timing-function: ease;
+    -o-transition-timing-function: ease;
+    -ms-transition-timing-function: ease;
+}
+.ui-carousel-item{
+    height: 100%;
+    width: 100%;
+    background: orange;
+    position: absolute;
+    overflow: hidden;
+}
+.fade{
+    opacity: 1;
+    -webkit-transition: opacity .5s ease-in;
+       -moz-transition: opacity .5s ease-in;
+        -ms-transition: opacity .5s ease-in;
+         -o-transition: opacity .5s ease-in;
+            transition: opacity .5s ease-in;
+}
+.fade-out{
+    opacity: 0;
+}
