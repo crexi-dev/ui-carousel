@@ -1,21 +1,20 @@
 import {
     Component,
-    OnInit,
-    QueryList,
     ContentChildren,
-    Input,
-    Output,
+    ElementRef,
+    EventEmitter,
     HostBinding,
     HostListener,
-    EventEmitter,
-    ElementRef
+    Input,
+    OnInit,
+    Output,
+    QueryList
 } from '@angular/core';
-
-import { Observable } from 'rxjs/Observable';
+import { throttleTime } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/throttleTime';
-
 import { UICarouselItemComponent } from '../ui-carousel-item/ui-carousel-item.component';
+
+
 
 @Component({
     selector: 'ui-carousel',
@@ -39,22 +38,22 @@ export class UICarouselComponent implements OnInit {
     private nextSubject: Subject<any> = new Subject<any>();
     private prevSubject: Subject<any> = new Subject<any>();
     @Output() onChange: EventEmitter<any> = new EventEmitter<any>();
-    @Input() height: string = "300px";
-    @Input() width: string = "100%";
+    @Input() height = '300px';
+    @Input() width = '100%';
     @Input() speed: number;
-    @Input() autoPlay: boolean = true;
+    @Input() autoPlay = true;
     @Input() autoPlaySpeed: number;
 
-    @Input() infinite: boolean = true;
-    @Input() fade: boolean = false;
-    @Input('dots') isDotsVisible: boolean = true;
-    @Input('arrows') isArrowsVisible: boolean = true;
+    @Input() infinite = true;
+    @Input() fade = false;
+    @Input('dots') isDotsVisible = true;
+    @Input('arrows') isArrowsVisible = true;
 
     @ContentChildren(UICarouselItemComponent) items: QueryList<UICarouselItemComponent>;
 
     private _width: number;
-    currentItemIndex: number = 0;
-    interval:any;
+    currentItemIndex = 0;
+    interval: any;
 
     private firstItemIndex: number; // the visual index of item and not necessary the index in the DOM
     private lastItemIndex: number; // ..
@@ -66,17 +65,17 @@ export class UICarouselComponent implements OnInit {
     ngOnInit() {
         this.speed = this.speed || 500;
         this.autoPlaySpeed = this.autoPlaySpeed || 1500;
-        if(this.autoPlay){
+        if (this.autoPlay){
             this.autoPlayFunction(true);
         }
-        this.nextSubject.throttleTime(this.speed).subscribe(() => {
+        this.nextSubject.asObservable().pipe(throttleTime(this.speed)).subscribe(() => {
             if (!this.fade) {
                 this.slideLeft();
             } else {
                 this.fadeLeft();
             }
         });
-        this.prevSubject.throttleTime(this.speed).subscribe(() => {
+        this.prevSubject.asObservable().pipe(throttleTime(this.speed)).subscribe(() => {
             if (!this.fade) {
                 this.slideRight();
             } else {
@@ -84,7 +83,7 @@ export class UICarouselComponent implements OnInit {
             }
         });
         this.onChange.subscribe((index: number) => {
-            let item = this.getItemByIndex(index);
+            const item = this.getItemByIndex(index);
             item.lazyLoad();
         })
     }
@@ -109,7 +108,7 @@ export class UICarouselComponent implements OnInit {
 
                 item.swiper.onSwipeLeft.subscribe((distance: number) => {
                     totalDistanceSwiped += Math.abs(distance);
-                    let shortDistance = distance / Math.pow(totalDistanceSwiped, .4);
+                    const shortDistance = distance / Math.pow(totalDistanceSwiped, .4);
                     if (itemIndex === this.firstItemIndex && this.infinite) {
                         this.rotateRight();
                     }
@@ -126,7 +125,7 @@ export class UICarouselComponent implements OnInit {
 
                 item.swiper.onSwipeRight.subscribe((distance: number) => {
                     totalDistanceSwiped += Math.abs(distance);
-                    let shortDistance = distance / Math.pow(totalDistanceSwiped, .4);
+                    const shortDistance = distance / Math.pow(totalDistanceSwiped, .4);
                     if (itemIndex === this.lastItemIndex && this.infinite) {
                         this.rotateLeft();
                     }
@@ -200,7 +199,7 @@ export class UICarouselComponent implements OnInit {
 
     slideTo(index: number) {
         this.onChange.emit((index + this.items.length) % this.items.length);
-        let steps = this.currentItemIndex - index;
+        const steps = this.currentItemIndex - index;
         if (this.infinite) {
             if (steps > 0) {
                 this.rotateRightTo(this.currentItemIndex);
@@ -283,8 +282,8 @@ export class UICarouselComponent implements OnInit {
     }
 
     rotateRight() {
-        let firstItemRef = this.getItemByIndex(this.firstItemIndex);
-        let lastItemRef = this.getItemByIndex(this.lastItemIndex);
+        const firstItemRef = this.getItemByIndex(this.firstItemIndex);
+        const lastItemRef = this.getItemByIndex(this.lastItemIndex);
 
         if (!this.fade) {
             lastItemRef.position = firstItemRef.position - this._width;
@@ -297,8 +296,8 @@ export class UICarouselComponent implements OnInit {
     }
 
     rotateLeft() {
-        let firstItemRef = this.getItemByIndex(this.firstItemIndex);
-        let lastItemRef = this.getItemByIndex(this.lastItemIndex);
+        const firstItemRef = this.getItemByIndex(this.firstItemIndex);
+        const lastItemRef = this.getItemByIndex(this.lastItemIndex);
         firstItemRef.position = lastItemRef.position + this._width;
         firstItemRef.currentPosition = firstItemRef.position;
         firstItemRef.disableTransition();
@@ -309,9 +308,9 @@ export class UICarouselComponent implements OnInit {
 
     fadeTo(index: number) {
         this.onChange.emit(index);
-        let firstItem = this.getItemByIndex(this.currentItemIndex);
-        let targetItem = this.getItemByIndex(index);
-        let highestZIndex = this.items.length;
+        const firstItem = this.getItemByIndex(this.currentItemIndex);
+        const targetItem = this.getItemByIndex(index);
+        const highestZIndex = this.items.length;
         targetItem.zIndex = firstItem.zIndex + 1;
         targetItem.setzIndex(targetItem.zIndex);
         targetItem.disableTransition();
@@ -320,13 +319,13 @@ export class UICarouselComponent implements OnInit {
     }
 
     fadeRight() {
-        let newIndex = (this.currentItemIndex + 1) % this.items.length;
+        const newIndex = (this.currentItemIndex + 1) % this.items.length;
         this.fadeTo(newIndex)
         this.currentItemIndex = newIndex;
     }
 
     fadeLeft() {
-        let newIndex = (this.currentItemIndex - 1 + this.items.length) % this.items.length;
+        const newIndex = (this.currentItemIndex - 1 + this.items.length) % this.items.length;
         this.fadeTo(newIndex);
         this.currentItemIndex = newIndex;
     }
@@ -350,7 +349,7 @@ export class UICarouselComponent implements OnInit {
         if (this.items && this.items.length > 0) {
             this._width = this.items.first.el.nativeElement.offsetWidth;
         }
-        let items = this.items.toArray();
+        const items = this.items.toArray();
         items.sort((item1, item2) => {
             if (item1.position > item2.position)
                 return 1;
@@ -360,10 +359,10 @@ export class UICarouselComponent implements OnInit {
                 return 0;
         })
 
-        let currentItem = this.getItemByIndex(this.currentItemIndex);
-        let currentItemIndex = items.indexOf(currentItem);
+        const currentItem = this.getItemByIndex(this.currentItemIndex);
+        const currentItemIndex = items.indexOf(currentItem);
         for (let i = currentItemIndex; i < items.length + currentItemIndex; i++) {
-            let item = items[(i + items.length) % items.length];
+            const item = items[(i + items.length) % items.length];
             item.position = ((i + items.length) % items.length - currentItemIndex) * this._width;
             item.disableTransition();
             item.moveTo(item.position);
@@ -375,10 +374,10 @@ export class UICarouselComponent implements OnInit {
         this.prevSubject.unsubscribe();
     }
 
-    autoPlayFunction(isAutoPlay : boolean){
-        if(this.autoPlay){
-            if(isAutoPlay){
-                this.interval = setInterval(()=>{
+    autoPlayFunction(isAutoPlay: boolean){
+        if (this.autoPlay){
+            if (isAutoPlay){
+                this.interval = setInterval(() => {
                     this.next();
                 }, this.autoPlaySpeed);
             }else{
