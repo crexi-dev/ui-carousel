@@ -1,15 +1,6 @@
-import {
-    ChangeDetectorRef,
-    Component,
-    ContentChildren,
-    ElementRef,
-    QueryList,
-    Renderer2,
-    ViewChild
-} from '@angular/core';
+import { Component, ContentChildren, ElementRef, QueryList, Renderer2, ViewChild } from '@angular/core';
 import { SwiperDirective } from '../directives/swiper.directive';
 import { UILazyloadDirective } from '../directives/ui-lazy-load.directive';
-
 
 @Component({
     selector: 'ui-carousel-item',
@@ -112,7 +103,7 @@ export class UICarouselItemComponent {
 
     fadeOut (duration: number) {
 
-        return new Promise(resolve => {
+        return new Promise<void>(resolve => {
 
             this.renderer.setStyle(this.el.nativeElement, 'opacity', '0');
             setTimeout(() => {

@@ -1,18 +1,14 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
         "lib": [
             "es6",
             "dom"
         ],
         "moduleResolution": "node",
-        "declaration": true,
-        "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "sourceMap": true,
         "noImplicitAny": true,
         "outDir": "./dist",
+        "target": "es6",
         "typeRoots": [
             "./node_modules/@types"
         ]
@@ -20,7 +16,7 @@
     "files": [
         "./index.ts"
     ],
-    "angularCompilerOptions": { 
+    "angularCompilerOptions": {
         "genDir": "dist",
         "skipTemplateCodegen": true
     }
